@@ -353,9 +353,124 @@ body.edit-mode [data-e]:focus{
   .contact-cards{flex-direction:column;align-items:center}
   .contact-card{width:100%;max-width:320px}
 }
+
+/* COVER (당근 인트로) */
+#cover{
+  position:fixed;inset:0;z-index:9999;background:#fff;overflow:hidden;
+  font-family:'Pretendard',sans-serif;
+  touch-action:none;
+}
+#cover.cover-done{display:none}
+#cover .cover-ground{
+  position:absolute;left:0;right:0;bottom:0;height:42%;background:#FF6F0F;
+  transition:height .6s cubic-bezier(.22,1,.36,1);
+}
+#cover.cover-lifted .cover-ground{height:0%}
+#cover .cover-logo{
+  position:absolute;top:32px;left:32px;display:flex;align-items:center;gap:14px;
+}
+#cover .cover-logo img{height:clamp(40px,6vw,64px)}
+#cover .cover-copy{
+  position:absolute;left:50%;top:26%;transform:translate(-50%,-50%);
+  text-align:center;width:min(92vw,560px);pointer-events:none;
+}
+#cover .cover-copy p{
+  font-weight:700;color:#111;font-size:clamp(16px,2.6vw,22px);line-height:1.6;
+  animation:cover-float 3.2s ease-in-out infinite;
+}
+#cover .cover-copy p:nth-child(2){animation-delay:.3s;color:#FF6F0F}
+#cover .cover-copy .cover-copy-done{display:none;color:#FF6F0F;font-weight:800;font-size:clamp(20px,3.4vw,28px)}
+@keyframes cover-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+#cover .cover-leaf-wrap{
+  position:absolute;left:50%;bottom:42%;
+  width:min(9vw,96px);cursor:grab;z-index:2;
+  --lx:-50%;--ly:0px;--lrot:0deg;
+  transform:translate(var(--lx),var(--ly)) rotate(var(--lrot));
+}
+#cover .cover-leaf-wrap:active{cursor:grabbing}
+#cover .cover-leaf-wrap img{width:100%;display:block;user-select:none;-webkit-user-drag:none}
+#cover.cover-hint .cover-leaf-wrap{animation:cover-wiggle 1.8s ease-in-out infinite;transform-origin:bottom center}
+@keyframes cover-wiggle{
+  0%,100%{transform:translate(var(--lx),var(--ly)) rotate(0deg)}
+  50%{transform:translate(var(--lx),var(--ly)) rotate(-6deg)}
+}
+/* Cover position-editor panel */
+#cover-editor{
+  position:fixed;right:16px;bottom:16px;z-index:10000;background:#fff;
+  border:1px solid #ddd;border-radius:10px;padding:12px;box-shadow:0 6px 24px rgba(0,0,0,.15);
+  font-family:'Pretendard',sans-serif;font-size:12px;width:260px;
+}
+#cover-editor h4{font-size:13px;margin-bottom:8px}
+#cover-editor .row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+#cover-editor .row label{width:80px;color:#555}
+#cover-editor .row input[type=range]{flex:1}
+#cover-editor .row span{width:44px;text-align:right;font-variant-numeric:tabular-nums}
+#cover-editor button{margin-top:6px;width:100%;padding:8px;border:none;border-radius:6px;background:#FF6F0F;color:#fff;font-weight:700;cursor:pointer}
+#cover .cover-cursor-hint{
+  position:absolute;left:50%;bottom:42%;transform:translate(-50%,-46px);
+  display:flex;flex-direction:column-reverse;align-items:center;gap:6px;
+  pointer-events:none;z-index:5;opacity:.9;
+}
+#cover .cover-cursor-hint .hint-dot{
+  width:34px;height:34px;border-radius:50%;border:2px solid #FF6F0F;
+  background:rgba(255,111,15,.12);
+  animation:cover-cursor-move 1.8s ease-in-out infinite;
+}
+#cover .cover-cursor-hint .hint-label{
+  font-size:12px;font-weight:700;color:#FF6F0F;white-space:nowrap;
+  animation:cover-cursor-move 1.8s ease-in-out infinite;
+}
+@keyframes cover-cursor-move{
+  0%{transform:translateY(0);opacity:.4}
+  50%{transform:translateY(-46px);opacity:1}
+  100%{transform:translateY(0);opacity:.4}
+}
+#cover.cover-lifted .cover-leaf-wrap,
+#cover.cover-lifted .cover-cursor-hint{opacity:0;transition:opacity .3s}
+#cover .cover-scrolldown{
+  position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
+  font-size:12px;color:#aaa;letter-spacing:.08em;font-weight:600;
+}
+@media(max-width:600px){
+  #cover .cover-logo{top:20px;left:20px}
+  #cover .cover-leaf-wrap{width:64px}
+}
 </style>
 </head>
 <body>
+
+<!-- COVER -->
+<section id="cover" class="cover-hint">
+  <div class="cover-logo"><img src="images/intro/logo-full.png" alt="당신 근처의 인턴 찾기"/></div>
+  <div class="cover-copy" id="cover-copy">
+    <p>당신 곁의 인턴이 어딘가 숨어있어요.</p>
+    <p>당근 잎을 뽑아 인턴을 찾아주세요.</p>
+    <p class="cover-copy-done" id="cover-copy-done">와! 인턴 발견! 🥕</p>
+  </div>
+  <div class="cover-ground"></div>
+  <div class="cover-cursor-hint" id="cover-hint">
+    <span class="hint-dot"></span>
+    <span class="hint-label">클릭 후 위로 당겨보세요</span>
+  </div>
+  <div class="cover-leaf-wrap" id="cover-leaf">
+    <img src="images/intro/leaf.png" alt="당근 잎"/>
+  </div>
+  <div class="cover-scrolldown">DRAG UP ↑</div>
+</section>
+
+<!-- COVER POSITION EDITOR (?edit=cover 로만 노출) -->
+<div id="cover-editor" style="display:none">
+  <h4>🥕 커버 위치 조정</h4>
+  <div class="row"><label>잎 좌우(X)</label><input type="range" id="ce-lx" min="-100" max="0" value="-50"><span id="ce-lx-v">-50%</span></div>
+  <div class="row"><label>잎 상하(Y)</label><input type="range" id="ce-ly" min="-200" max="200" value="0"><span id="ce-ly-v">0px</span></div>
+  <div class="row"><label>땅 높이</label><input type="range" id="ce-ground" min="0" max="80" value="42"><span id="ce-ground-v">42%</span></div>
+  <div class="row"><label>문구 상단</label><input type="range" id="ce-copy" min="0" max="60" value="26"><span id="ce-copy-v">26%</span></div>
+  <div class="row"><label>잎 너비</label><input type="range" id="ce-lw" min="40" max="200" value="96"><span id="ce-lw-v">96px</span></div>
+  <button onclick="printCoverCSS()">📋 콘솔에 CSS 값 출력</button>
+</div>
 
 <!-- EDIT BAR -->
 <div id="edit-bar">
@@ -1770,6 +1885,113 @@ function showToast(msg) {
     const el = document.querySelector(`[data-e="${key}"]`);
     if (el) el.innerHTML = val;
   });
+})();
+
+// COVER interaction: click+drag the leaf upward to reveal the portfolio
+(function cover() {
+  const cover = document.getElementById('cover');
+  const leaf = document.getElementById('cover-leaf');
+  const hint = document.getElementById('cover-hint');
+  const copyDone = document.getElementById('cover-copy-done');
+  const copy = document.getElementById('cover-copy');
+  if (!cover || !leaf) return;
+
+  if (sessionStorage.getItem('cover-seen') === '1') {
+    cover.classList.add('cover-done');
+    document.body.style.overflow = '';
+    return;
+  }
+  document.body.style.overflow = 'hidden';
+
+  const DRAG_THRESHOLD = 70;
+  let dragging = false, startY = 0, revealed = false;
+
+  function onDown(e) {
+    if (revealed) return;
+    dragging = true;
+    startY = (e.touches ? e.touches[0].clientY : e.clientY);
+    cover.classList.remove('cover-hint');
+    leaf.style.transition = 'none';
+  }
+  function onMove(e) {
+    if (!dragging || revealed) return;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY);
+    const dy = Math.min(0, y - startY);
+    const baseLy = getComputedStyle(leaf).getPropertyValue('--ly') || '0px';
+    leaf.style.transform = `translate(var(--lx), calc(${baseLy} + ${dy}px)) rotate(var(--lrot))`;
+    if (startY - y > DRAG_THRESHOLD) reveal();
+  }
+  function onUp() {
+    if (!dragging || revealed) return;
+    dragging = false;
+    leaf.style.transition = '';
+    leaf.style.transform = '';
+    cover.classList.add('cover-hint');
+  }
+
+  function reveal() {
+    if (revealed) return;
+    revealed = true;
+    dragging = false;
+    hint.style.opacity = '0';
+    copy.querySelectorAll('p:not(.cover-copy-done)').forEach(p => p.style.display = 'none');
+    copyDone.style.display = 'block';
+    copyDone.style.animation = 'cover-float 1.6s ease-in-out infinite';
+    cover.classList.add('cover-lifted');
+    sessionStorage.setItem('cover-seen', '1');
+    setTimeout(() => {
+      cover.classList.add('cover-done');
+      document.body.style.overflow = '';
+    }, 1600);
+  }
+
+  leaf.addEventListener('mousedown', onDown);
+  leaf.addEventListener('touchstart', onDown, { passive: true });
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('touchmove', onMove, { passive: true });
+  window.addEventListener('mouseup', onUp);
+  window.addEventListener('touchend', onUp);
+})();
+
+// COVER position editor — visit ?edit=cover to show sliders and tweak layout live
+function printCoverCSS() {
+  const leaf = document.getElementById('cover-leaf');
+  const ground = document.querySelector('#cover .cover-ground');
+  const copyEl = document.querySelector('#cover .cover-copy');
+  console.log('[cover css]', {
+    leafX: leaf.style.getPropertyValue('--lx'),
+    leafY: leaf.style.getPropertyValue('--ly'),
+    leafWidth: leaf.style.width,
+    groundHeight: ground.style.height,
+    copyTop: copyEl.style.top,
+  });
+  alert('콘솔(F12)에 값이 출력됐어요. 개발자에게 그 값을 알려주세요.');
+}
+(function coverEditor() {
+  if (new URLSearchParams(location.search).get('edit') !== 'cover') return;
+  const panel = document.getElementById('cover-editor');
+  const cover = document.getElementById('cover');
+  cover.classList.remove('cover-done');
+  cover.classList.add('cover-hint');
+  document.body.style.overflow = 'hidden';
+  panel.style.display = 'block';
+  const leaf = document.getElementById('cover-leaf');
+  const ground = document.querySelector('#cover .cover-ground');
+  const copyEl = document.querySelector('#cover .cover-copy');
+
+  const bind = (id, unit, apply) => {
+    const input = document.getElementById(id);
+    const out = document.getElementById(id + '-v');
+    input.addEventListener('input', () => {
+      out.textContent = input.value + unit;
+      apply(input.value);
+    });
+  };
+  bind('ce-lx', '%', v => leaf.style.setProperty('--lx', v + '%'));
+  bind('ce-ly', 'px', v => leaf.style.setProperty('--ly', v + 'px'));
+  bind('ce-ground', '%', v => ground.style.height = v + '%');
+  bind('ce-copy', '%', v => copyEl.style.top = v + '%');
+  bind('ce-lw', 'px', v => leaf.style.width = v + 'px');
 })();
 </script>
 <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
