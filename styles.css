@@ -1,0 +1,47 @@
+/* Shared styles for /p/<id>/ project detail pages (extracted from index.html) */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#FF3A5C;--pink-light:#fff0f3;--black:#111;--white:#fff;
+  --gray-bg:#f7f7f7;--gray-mid:#888;--gray-dark:#444;
+  --radius:12px;--nav-h:64px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--black);background:var(--white);line-height:1.7}
+
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;padding:0 48px;z-index:1000}
+.nav-logo{font-weight:900;font-size:15px;letter-spacing:.08em;color:var(--black);text-decoration:none}
+.back-link{font-size:14px;font-weight:700;color:var(--gray-dark);text-decoration:none;transition:color .2s}
+.back-link:hover{color:var(--pink)}
+
+.page{max-width:900px;margin:0 auto;padding:calc(var(--nav-h) + 56px) 48px 100px}
+
+.detail-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tag{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.tag-org{background:var(--black);color:var(--white)}
+.tag-period{background:#eee;color:#666}
+.tag-contrib{background:var(--pink-light);color:var(--pink)}
+
+.detail-title{font-size:clamp(24px,3.2vw,34px);font-weight:900;margin-bottom:8px;line-height:1.3}
+.detail-sub{font-size:15px;color:var(--gray-mid);margin-bottom:36px}
+
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:40px}
+.gallery figure{margin:0}
+.gallery img{width:100%;height:auto;border-radius:var(--radius);display:block;background:#eee}
+.gallery figcaption{font-size:12px;color:var(--gray-mid);margin-top:6px}
+
+.detail-block{margin-bottom:28px}
+.detail-block-label{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--pink);text-transform:uppercase;margin-bottom:10px}
+.detail-block-body{font-size:15px;color:#444;line-height:1.85}
+.detail-block-body p{margin:0 0 4px}
+.detail-block-body strong{color:var(--black);font-weight:700}
+.detail-result{background:var(--pink-light);border-radius:8px;padding:20px 24px;margin-top:4px}
+.detail-result .detail-block-label{color:var(--pink)}
+
+footer{background:#080808;padding:28px 48px;text-align:center;margin-top:40px}
+.footer-copy{font-size:12px;color:#3a3a3a;letter-spacing:.06em}
+
+@media(max-width:600px){
+  .page{padding:calc(var(--nav-h) + 32px) 20px 72px}
+  nav{padding:0 20px}
+  .gallery{grid-template-columns:1fr}
+}
